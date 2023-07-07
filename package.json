@@ -1,0 +1,63 @@
+{
+  "name": "@zalari/string-compression-utils",
+  "version": "1.0.0",
+  "description": "Compress or decompress a string with native browser APIs.",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "type": "module",
+  "keywords": [
+    "utils",
+    "compression",
+    "decompression",
+    "browser",
+    "browser",
+    "string",
+    "btoa",
+    "atob",
+    "base64",
+    "inflate",
+    "gzip",
+    "deflate",
+    "deflate-raw"
+  ],
+  "author": {
+    "name": "Zalari GmbH",
+    "email": "info@zalari.de",
+    "url": "https://www.zalari.de"
+  },
+  "contributors": [
+    {
+      "name": "Tom Kopp",
+      "email": "tom.kopp@zalari.de"
+    },
+    {
+      "name": "David Enke",
+      "email": "david.enke@zalari.de"
+    }
+  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zalari/string-compression-utils.git"
+  },
+  "bugs": {
+    "url": "https://github.com/zalari/string-compression-utils/issues"
+  },
+  "homepage": "https://github.com/zalari/string-compression-utils#readme",
+  "scripts": {
+    "test": "wtr",
+    "test:watch": "npm run test -- --watch",
+    "build": "tsc"
+  },
+  "engines": {
+    "node": "^18"
+  },
+  "devDependencies": {
+    "@esm-bundle/chai": "4.3.4-fix.0",
+    "@web/dev-server-esbuild": "0.4.1",
+    "@web/test-runner": "0.16.1",
+    "@web/test-runner-puppeteer": "0.13.1",
+    "ts-node": "10.9.1",
+    "typescript": "5.1.6"
+  }
+}

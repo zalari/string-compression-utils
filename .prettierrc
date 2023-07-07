@@ -1,0 +1,6 @@
+{
+  "singleQuote": true,
+  "quoteProps": "as-needed",
+  "htmlWhitespaceSensitivity": "strict",
+  "printWidth": 100
+}
