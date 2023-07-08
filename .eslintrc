@@ -1,0 +1,14 @@
+{
+  "extends": ["plugin:@typescript-eslint/recommended"],
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "project": "./tsconfig.lint.json",
+    "ecmaVersion": 2015,
+    "sourceType": "module"
+  },
+  "plugins": ["@typescript-eslint/eslint-plugin", "eslint-plugin-tsdoc"],
+  "root": true,
+  "rules": {
+    "tsdoc/syntax": "warn"
+  }
+}
