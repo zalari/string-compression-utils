@@ -1,0 +1,102 @@
+name: Checks
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  lint:
+    if: |
+      !startsWith(github.event.head_commit.message, 'ci: release v')
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          cache: "npm"
+          node-version: 18.16.0
+      - name: Install dependencies
+        run: npm ci
+      - name: Lint
+        run: npm run lint
+
+  test:
+    name: Test
+    needs: lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          cache: "npm"
+          node-version: 18.16.0
+      - name: Install dependencies
+        run: npm ci && node ./node_modules/puppeteer/install.js
+      - name: Test
+        run: npm run test
+
+  build:
+    name: Build
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          cache: "npm"
+          node-version: 18.16.0
+      - name: Install dependencies
+        run: npm ci
+      - name: Build
+        run: npm run build
+      - uses: actions/upload-artifact@v3
+        if: success() && github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+        with:
+          name: latest
+          path: dist
+
+  release:
+    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+    name: Release
+    needs: build
+    runs-on: ubuntu-latest
+    permissions: write-all
+    outputs:
+      version: ${{ steps.version.outputs.latest }}
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          cache: "npm"
+          node-version: 18.16.0
+      - uses: actions/download-artifact@v3
+        with:
+          name: latest
+          path: dist
+      - run: |
+          git config user.name "${GITHUB_ACTOR}"
+          git config user.email "${GITHUB_ACTOR}@users.noreply.github.com"
+      - id: version
+        run: echo "latest=$(npx release-it --release-version)" >> $GITHUB_OUTPUT
+      - run: |
+          asset="string-compression-utils.tgz"
+          mv $(npm pack --silent) ${asset}
+          npx --package release-it --package @release-it/conventional-changelog release-it \
+              --ci \
+              --github.release \
+              --github.assets=${asset} \
+              --github.autoGenerate \
+              --git.commitMessage='ci: release v${version}' \
+              --git.pushArgs=--follow-tags \
+              --plugins.@release-it/conventional-changelog.infile=CHANGELOG.md \
+              --plugins.@release-it/conventional-changelog.header='# String compression utils' \
+              --plugins.@release-it/conventional-changelog.preset=angular
+        env:
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+      - run: echo "Released ${{ steps.version.outputs.latest }} :rocket:" >> $GITHUB_STEP_SUMMARY
