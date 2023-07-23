@@ -1,8 +1,9 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 
 declare global {
   type EachFunc = (this: Context, params: Record<string, any>, done: Done) => void;
   type EachAsyncFunc = (this: Context, params: Record<string, any>) => PromiseLike<any>;
-  
+
   namespace Mocha {
     interface TestFunction {
       each(
