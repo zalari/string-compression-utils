@@ -81,8 +81,7 @@ jobs:
       - run: |
           git config user.name "${GITHUB_ACTOR}"
           git config user.email "${GITHUB_ACTOR}@users.noreply.github.com"
-      - id: version
-        run: echo "latest=$(npx release-it --release-version)" >> $GITHUB_OUTPUT
+      - run: npm config set //registry.npmjs.org/:_authToken ${{secrets.NPM_TOKEN}}
       - run: |
           asset="string-compression-utils.tgz"
           mv $(npm pack --silent) ${asset}
@@ -99,4 +98,3 @@ jobs:
         env:
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
-      - run: echo "Released ${{ steps.version.outputs.latest }} :rocket:" >> $GITHUB_STEP_SUMMARY
