@@ -7,9 +7,7 @@
  */
 export async function compressRaw(data: string, encoding: CompressionFormat): Promise<string> {
   // stream the string through the compressor
-  const stream = new Blob([new TextEncoder().encode(data)])
-    .stream()
-    .pipeThrough(new CompressionStream(encoding));
+  const stream = new Blob([new TextEncoder().encode(data)]).stream().pipeThrough(new CompressionStream(encoding));
   // convert the stream to an array buffer
   const buffer = await new Response(stream).arrayBuffer();
   // convert the array buffer to a binary string
